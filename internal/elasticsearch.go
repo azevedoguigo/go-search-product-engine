@@ -23,7 +23,7 @@ func IndexProducts(client *elastic.Client, products []Product) {
 }
 
 func SearchProducts(client *elastic.Client, query string) ([]Product, error) {
-	queryBuilder := elastic.NewMultiMatchQuery(query, "name", "description").
+	queryBuilder := elastic.NewMultiMatchQuery(query, "name^3", "description^1").
 		Fuzziness("AUTO").
 		PrefixLength(2).
 		Operator("AND")
