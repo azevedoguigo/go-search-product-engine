@@ -12,13 +12,13 @@ func HandleSearch(client *elastic.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		query := r.URL.Query().Get("q")
 		if query == "" {
-			http.Error(w, "Query não fornecida", http.StatusBadRequest)
+			http.Error(w, "Query not provided", http.StatusBadRequest)
 			return
 		}
 
 		products, err := SearchProducts(client, query)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("Erro ao buscar produtos: %v", err), http.StatusInternalServerError)
+			http.Error(w, fmt.Sprintf("Error to get products: %v", err), http.StatusInternalServerError)
 			return
 		}
 
