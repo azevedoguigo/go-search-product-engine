@@ -40,10 +40,15 @@ func IndexProducts(client *elastic.Client, products []Product) {
 	log.Println("Products indexed successfully!")
 }
 
-func SearchProductsByName(client *elastic.Client, query string) ([]Product, error) {
+func SearchProducts(client *elastic.Client, query string) ([]Product, error) {
+	queryBuilder := elastic.NewMultiMatchQuery(query, "name", "description").
+		Fuzziness("AUTO").
+		PrefixLength(2).
+		Operator("AND")
+
 	searchResult, err := client.Search().
 		Index("products").
-		Query(elastic.NewMatchQuery("name", query)).
+		Query(queryBuilder).
 		Do(context.Background())
 	if err != nil {
 		return nil, err
@@ -52,8 +57,7 @@ func SearchProductsByName(client *elastic.Client, query string) ([]Product, erro
 	var products []Product
 	for _, hit := range searchResult.Hits.Hits {
 		var product Product
-		err := json.Unmarshal(hit.Source, &product)
-		if err == nil {
+		if err := json.Unmarshal(hit.Source, &product); err == nil {
 			products = append(products, product)
 		}
 	}

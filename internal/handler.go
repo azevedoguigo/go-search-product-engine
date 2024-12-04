@@ -16,7 +16,7 @@ func HandleSearch(client *elastic.Client) http.HandlerFunc {
 			return
 		}
 
-		products, err := SearchProductsByName(client, query)
+		products, err := SearchProducts(client, query)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("Erro ao buscar produtos: %v", err), http.StatusInternalServerError)
 			return
